@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Interface</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+        body {
+            background-color: #0f172a;
+            color: #000;
+            padding-top: 2rem;
+        }
+
+/* imeanzia hapa */
+.card {
+    background: #111827;
+    color: white;
+    width: 100%;
+    border-radius: 16px;
+    padding: 25px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.title {
+    font-size: 18px;
+    color: #cbd5e1;
+}
+
+.balance {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.usdt {
+    font-size: 16px;
+    color: #9ca3af;
+}
+
+.sub-balance {
+    color: #9ca3af;
+}
+
+.pnl {
+    color: #22c55e;
+    font-size: 14px;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+button {
+    background: #1f2937;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #374151;
+}
+
+.chart-container {
+    width: 300px;
+}
+/* imeishia hapa */
+
+        /* Launch Notice */
+        .launch-notice {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Asset Cards Grid */
+        .assets-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .asset-card {
+            padding: 1.5rem 1rem;
+            border-radius: 12px;
+            position: relative;
+        }
+        .asset-card .icon {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .asset-name {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        .asset-value {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .change-rate {
+            background-color: #f0f0f0;
+            position: absolute;
+            top: 60px;
+            right: 10px;
+            border-radius: 6px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            color: #27ae60;
+        }
+        .humancoin { background-color: #000; }
+        .digital-dollars { background-color: #2ecc71; }
+        .solana { background-color: #9b59b6; }
+        .human-card { background-color: #3498db; }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: space-around;
+            padding: 0 1rem;
+            margin-bottom: 2.5rem;
+        }
+        .action-btn {
+            background-color: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            width: 20%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+        }
+        .action-btn .icon {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: white;
+        }
+
+        /* Grants List */
+        .grants-list {
+            padding: 0 1.5rem;
+            margin-bottom: 3rem;
+        }
+        .grant-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        .grant-left {
+            display: flex;
+            align-items: center;
+        }
+        .grant-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            margin-right: 1rem;
+        }
+        .grant-info .title {
+            font-size: 0.9rem;
+            color: #fff;
+            margin-bottom: 0.25rem;
+        }
+        .grant-info .date {
+            font-size: 0.75rem;
+            color: #888;
+        }
+        .grant-right {
+            background-color: #f0f0f0;
+            border-radius: 6px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            color: #27ae60;
+        }
+        .grant-1 { background-color: #3498db; }
+        .grant-2 { background-color: #2ecc71; }
+        .grant-3 { background-color: #e74c3c; }
+        .grant-4 { background-color: #e67e22; }
+        .grant-5 { background-color: #9b59b6; }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #0f1729;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem 0;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.7rem;
+            color: #888;
+        }
+        .nav-item .icon {
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+        .nav-item.active {
+            color: #000;
+        }
+        .nav-item.active .icon {
+            color: #000;
+        }
+        a {
+    text-decoration: none;
+    border-radius: 8px;
+    width: 80%;
+    height: 100%;
+        }
+     a:hover {
+        background: #334155;
+        }
+
+    </style>
+    <!-- Font Awesome for icons (optional but recommended) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Total Balance -->
+    <div class="card">
+
+        <div class="left">
+            <div class="title">Estimated Balance</div>
+    
+            <div>
+                <span class="balance">11550</span>
+                <span class="usdt">USDT</span>
+            </div>
+    
+            <div class="sub-balance">≈ $11550</div>
+    
+            <div class="pnl">Today's PnL + $0.00 (1.50%)</div>
+        </div>
+    
+        <div>
+            <div class="buttons">
+                <button>Deposit</button>
+                <button>Withdraw</button>
+                <button>Transfer</button>
+                <button>History</button>
+            </div>
+    
+            <div class="chart-container">
+                <canvas id="miniChart"></canvas>
+            </div>
+        </div>
+    
+    </div>
+    
+    <script>
+    const ctx = document.getElementById('miniChart');
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['', '', '', '', '', '', '', ''],
+            datasets: [{
+                data: [10, 10, 10, 10, 8, 10, 8, 10],
+                borderColor: '#facc15',
+                borderWidth: 2,
+                tension: 0,
+                fill: false,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { display: false },
+                y: { display: false }
+            }
+        }
+    });
+    </script>
+
+
+    <!-- Asset Cards -->
+    <div class="assets-grid">
+        <div class="asset-card humancoin">
+            <div class="icon"><i class="fas fa-circle-notch"></i></div>
+            <div class="asset-name">Portfolio I</I></div>
+            <div class="asset-value">$2950</div>
+            <div class="change-rate">+8.7%</div>
+        </div>
+        <div class="asset-card digital-dollars">
+            <div class="icon"><i class="fas fa-dollar-sign"></i></div>
+            <div class="asset-name">Portfoli II</div>
+            <div class="asset-value">$5000</div>
+            <div class="change-rate">+4.2%</div>
+        </div>
+        <div class="asset-card solana">
+            <div class="icon"><i class="fas fa-cube"></i></div>
+            <div class="asset-name">Portfoli III</div>
+            <div class="asset-value">$3000</div>
+            <div class="change-rate">+3.2%</div>
+        </div>
+        <div class="asset-card human-card">
+            <div class="icon"><i class="fas fa-credit-card"></i></div>
+            <div class="asset-name">Portfoli IV</div>
+            <div class="asset-value">$600</div>
+            <div class="change-rate">+6.5%</div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <button class="action-btn">
+            <span class="icon"><i class="fas fa-paper-plane"></i></span>
+            Send
+        </button>
+        <button class="action-btn">
+            <span class="icon"><i class="fas fa-exchange-alt"></i></span>
+            Transfer
+        </button>
+        <button class="action-btn">
+            <span class="icon"><i class="fas fa-shopping-cart"></i></span>
+            Buy / Sell
+        </button>
+        <button class="action-btn">
+            <span class="icon"><i class="fas fa-qrcode"></i></span>
+            Receive
+        </button>
+    </div>
+
+     <!--statement line. -->
+  <div class="launch-notice">
+    Contribution  Statement.
+</div>
+
+    <!-- Grants List -->
+    <div class="grants-list">
+        <div class="grant-item">
+            <div class="grant-left">
+                <div class="grant-icon grant-1"><i class="fas fa-paper-plane"></i></i></div>
+                <div class="grant-info">
+                    <div class="title">UBFMB6M3G647</div>
+                    <div class="date">December 10, 2025</div>
+                </div>
+            </div>
+            <div class="grant-right">+700</div>
+        </div>
+        <div class="grant-item">
+            <div class="grant-left">
+                <div class="grant-icon grant-2"><i class="fas fa-paper-plane"></i></i></div>
+                <div class="grant-info">
+                    <div class="title">UBFMB7LZW6789</div>
+                    <div class="date">December 03, 2025</div>
+                </div>
+            </div>
+            <div class="grant-right">+1000</div>
+        </div>
+        <div class="grant-item">
+            <div class="grant-left">
+                <div class="grant-icon grant-3"><i class="fas fa-paper-plane"></i></i></div>
+                <div class="grant-info">
+                    <div class="title">MBFKHGDA537</div>
+                    <div class="date">November 26, 2025</div>
+                </div>
+            </div>
+            <div class="grant-right">+200</div>
+        </div>
+        <div class="grant-item">
+            <div class="grant-left">
+                <div class="grant-icon grant-4"><i class="fas fa-paper-plane"></i></i></div>
+                <div class="grant-info">
+                    <div class="title">UBFHGAF4765</div>
+                    <div class="date">November 19, 2025</div>
+                </div>
+            </div>
+            <div class="grant-right">+800</div>
+        </div>
+        <div class="grant-item">
+            <div class="grant-left">
+                <div class="grant-icon grant-5"><i class="fas fa-paper-plane"></i></i></div>
+                <div class="grant-info">
+                    <div class="title">UBGS5647NC</div>
+                    <div class="date">November 12, 2025</div>
+                </div>
+            </div>
+            <div class="grant-right">+300</div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="">
+        <div class="nav-item active">
+            <span class="icon"><i class="fas fa-id-card"></i></span>
+            Home
+        </div></a>
+        <a href="">
+        <div class="nav-item">
+            <span class="icon"><i class="fas fa-wallet"></i></span>
+            Wallet
+        </div></a>
+        <a href="">
+        <div class="nav-item">
+            <span class="icon"><i class="fas fa-parachute-box"></i></span>
+            Benefits
+        </div></a>
+        <a href="">
+        <div class="nav-item">
+            <span class="icon"><i class="fas fa-cog"></i></span>
+            Settings
+        </div></a>
+    </div>
+</body>
+</html>
